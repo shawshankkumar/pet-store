@@ -1,9 +1,8 @@
 import { Router } from 'express';
+import { routerHandler } from './router';
 
 export default (): Router => {
   const app = Router();
-
-  //TODO: add routes here...
-
+  app.use('/pet', routerHandler());
   return app;
 };
