@@ -2,6 +2,8 @@ import { loggers } from 'winston';
 import db from './../loaders/database';
 import logger from './../loaders/logger';
 import { customAlphabet } from 'nanoid';
+import { permittedCrossDomainPolicies } from 'helmet';
+import database from './../loaders/database';
 const nanoid = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 4);
 
 let d;
@@ -74,7 +76,8 @@ export const show = async (tag: string) => {
 
 export const update = async (petdata, tag) => {
   try {
-    if ((await (await db()).collection('petstore').findOne({ tag: tag })) === null) {
+    let data = await (await db()).collection('petstore').findOne({ tag: tag });
+    if (data === null) {
       throw { code: 404, message: 'Pet data not found' };
     }
     await (await db()).collection('petstore').replaceOne({ tag: tag }, petdata);
@@ -107,5 +110,43 @@ export const ownerAllPets = async (owner: string) => {
     logger.error(error);
     if (error.code === 404) throw error;
     throw { code: 500, message: 'Could not display all pets of an owner' };
+  }
+};
+
+export const ownerOfPet = async (pet, tag) => {
+  try {
+    let data = await (await db()).collection('petstore').find({ pet: pet }).toArray();
+    let obj: object = {};
+    let array: object = [];
+    for (let i = 0; i < data.length; i++) {
+      obj = {
+        owner: data[i].owner,
+        tag: data[i].tag,
+      };
+      array[i] = obj;
+    }
+    let objSend = {
+      pet: pet,
+      array: array,
+    };
+
+    console.log(objSend);
+    return array;
+  } catch (error) {
+    throw { code: 500, message: 'Could not display owner of a pet' };
+  }
+};
+
+export const allOwners = async () => {
+  try {
+    let array: Array<string> = [];
+    let data = await (await db()).collection('petstore').find({}).toArray();
+    for (let i = 0; i < data.length; i++) {
+      array[i] = data[i].owner;
+    }
+    console.log(array);
+    return array;
+  } catch (error) {
+    throw { code: 500, message: 'could not view all owners' };
   }
 };

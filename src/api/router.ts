@@ -1,15 +1,17 @@
 import { Router, Request, Response } from 'express';
-import { showAllPets, addPet, show, update, deletePet, ownerAllPets } from './controller';
+import { showAllPets, addPet, show, update, deletePet, ownerAllPets, ownerOfPet, allOwners } from './controller';
 
 const app = Router();
 
 export const routerHandler = () => {
-  app.get('/showallpets', showAllPetsHandler);
-  app.post('/add', addPetHandler);
-  app.get('/show', showHandler);
-  app.put('/update', updateHandler);
-  app.delete('/delete', deleteHandler);
-  app.get('/ownerallpets', ownerAllPetsHandler);
+  app.get('/showall', showAllPetsHandler); //to display all pets and their information
+  app.post('/add', addPetHandler); //to add a pet
+  app.get('/show', showHandler); //to show pet (uses their tag, not the owner name)
+  app.put('/update', updateHandler); //update information about a pet
+  app.delete('/delete', deleteHandler); //delete a pet from the petstore Database
+  app.get('/ownerallpets', ownerAllPetsHandler); //display all pets of an owner
+  app.get('/ownerofpet', ownerOfPetHandler); //display owner of a pet. Tag is also displayed just in case multiple pets have the same name
+  app.get('/allowners', allOwnersHandler);
   return app;
 };
 
@@ -70,5 +72,25 @@ const ownerAllPetsHandler = async (req: Request, res: Response) => {
     })
     .catch(error => {
       res.status(error.code).json({ message: error.message, success: false });
+    });
+};
+
+const ownerOfPetHandler = async (req: Request, res: Response) => {
+  ownerOfPet(req.body.pet, req.body.tag)
+    .then(owner => {
+      res.json({ success: true, message: 'owner displayed', owner: owner });
+    })
+    .catch(error => {
+      res.status(error.code).json({ message: error.message, success: false });
+    });
+};
+
+const allOwnersHandler = async (req: Request, res: Response) => {
+  allOwners()
+    .then(all => {
+      res.json({ success: true, message: 'All users displayed', ownerlist: all });
+    })
+    .catch(error => {
+      res.status(error.code).json({ success: false, message: error.message });
     });
 };
