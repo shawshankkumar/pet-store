@@ -4,6 +4,7 @@ import logger from './../loaders/logger';
 import { customAlphabet } from 'nanoid';
 import { permittedCrossDomainPolicies } from 'helmet';
 import database from './../loaders/database';
+import LoggerInstance from './../loaders/logger';
 const nanoid = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 4);
 
 let d;
@@ -43,9 +44,12 @@ export const addPet = async (data: object, owner, pet) => {
         }
 
         let tag = 'SPS-' + nanoid(); //this adds a unique tag/id for everypet. SPS stands for Shashank's pet store.
+        let date = new Date(); // to add date of creation
+        let currentDate = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
         let finalData = {
             ...data,
             tag: tag,
+            lastUpdate: currentDate,
         };
         await (await db()).collection('petstore').insertOne(finalData);
         return finalData.tag;
@@ -80,8 +84,23 @@ export const update = async (petdata, tag) => {
         if (data === null) {
             throw { code: 404, message: 'Pet data not found' };
         }
-        await (await db()).collection('petstore').replaceOne({ tag: tag }, petdata);
+        let date = new Date(); // to add date of creation
+        let currentDate = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
+        let updateData = {
+            pet: petdata.pet || data.pet,
+            owner: petdata.owner || data.owner,
+            ownerphone: petdata.ownerphone || data.ownerphone,
+            species: petdata.species || data.species,
+            breed: petdata.breed || data.breed,
+            age: petdata.age || data.age,
+            weight: petdata.weight || data.weight,
+            gender: petdata.gender || data.gender,
+            lastUpdate: currentDate,
+            tag: tag,
+        };
+        await (await db()).collection('petstore').replaceOne({ tag: tag }, updateData);
     } catch (error) {
+        logger.error(error);
         if (error.code === 404) throw error;
         throw { code: 500, message: 'could not update the skill' };
     }
@@ -94,6 +113,7 @@ export const deletePet = async tag => {
         }
         await (await db()).collection('petstore').deleteOne({ tag: tag });
     } catch (error) {
+        logger.error(error);
         if (error.code === 404) throw error;
         throw { code: 500, message: 'could not delete the pet data' };
     }
@@ -159,6 +179,7 @@ export const allOwners = async () => {
         }
         return array;
     } catch (error) {
+        logger.error(error);
         throw { code: 500, message: 'could not view all owners' };
     }
 };
