@@ -84,19 +84,12 @@ export const update = async (petdata, tag) => {
         if (data === null) {
             throw { code: 404, message: 'Pet data not found' };
         }
-        let date = new Date(); // to add date of creation
+        let date = new Date(); // to add date of creation or update
         let currentDate = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
         let updateData = {
-            pet: petdata.pet || data.pet,
-            owner: petdata.owner || data.owner,
-            ownerphone: petdata.ownerphone || data.ownerphone,
-            species: petdata.species || data.species,
-            breed: petdata.breed || data.breed,
-            age: petdata.age || data.age,
-            weight: petdata.weight || data.weight,
-            gender: petdata.gender || data.gender,
+            ...data,
+            ...petdata,
             lastUpdate: currentDate,
-            tag: tag,
         };
         await (await db()).collection('petstore').replaceOne({ tag: tag }, updateData);
     } catch (error) {
@@ -106,15 +99,24 @@ export const update = async (petdata, tag) => {
     }
 };
 
-export const deletePet = async tag => {
+export const deletePet = async (tag, owner) => {
     try {
-        if ((await (await db()).collection('petstore').findOne({ tag: tag })) === null) {
+        let data = await (await db()).collection('petstore').findOne({ tag: tag });
+        if (data === null) {
             throw { code: 404, message: 'Pet data not found' };
+        }
+        if (data.owner !== owner) {
+            throw { code: 401, message: 'tag and name does not match' };
         }
         await (await db()).collection('petstore').deleteOne({ tag: tag });
     } catch (error) {
         logger.error(error);
-        if (error.code === 404) throw error;
+        if (error.code === 404) {
+            throw error;
+        }
+        if (error.code === 401) {
+            throw error;
+        }
         throw { code: 500, message: 'could not delete the pet data' };
     }
 };
