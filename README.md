@@ -3,9 +3,7 @@
 This is a API which uses Node.js, MongoDB, and express. It routes the user requests, fetches/adds/updates/deletes data and sends back a suitable response. 
 
 By default, it runs on PORT:5050. 
-To run this, you need:
-
-to create a `.env` file. In that .env file, specify the port you wish to use(or not, it will run on 5050 by default) and add a mongodb url. The url must have a username, password and must end with `/petstore`. When making a database in atlas, the user needs to make sure that the Database name and the collection name, both are, `petstore`. 
+To run this, you need to create a `.env` file. In that .env file, specify the port you wish to use(or not, it will run on 5050 by default) and add a mongodb url. The url must have a username, password and must end with `/petstore`. When making a database in atlas, the user needs to make sure that the Database name and the collection name, both are, `petstore`. 
 If you are facing any difficulties, contact the owner of this repository. 
 
 Once a `.env` file has been created, do the following to run this:
@@ -15,6 +13,9 @@ Once a `.env` file has been created, do the following to run this:
 * yarn start: This will start the server.
 
 go to `localhost:5050/api/pet/(route)`. 
+
+A unique `tag` is generated for every to make the entire process more efficient. Multiple pets and owners can share the same name but the tag assigned to each pet at the time of
+creation (/add) is unique.
 
 # Routes: 
 * /showall 
