@@ -21,7 +21,7 @@ go to `localhost:5050/api/pet/(route)`.
 
 This route, once accessed, shows all the pets of the petstore. The Response sent has all pet names, their and their owner's data. It also incudes the last update date. 
 A get request.
-request format:
+* request format:
 {
   (no data needs to be sent)
 }
