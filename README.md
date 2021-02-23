@@ -20,8 +20,7 @@ go to `localhost:5050/api/pet/(route)`.
 * /showall 
 
 This route, once accessed, shows all the pets of the petstore. The Response sent has all pet names, their and their owner's data. It also incudes the last update date. 
-A get request.
-* request format:
+A get request. <br/> request format:
 {
   (no data needs to be sent)
 }
@@ -30,7 +29,7 @@ A get request.
 
 This route can be used to add a new pet to the pet store. 
 A post request.
-The pet data request format is(.json):
+<br/> The pet data request format is(.json):
             {"pet": "pet's name",
             "owner": "owner's name" ,
             "ownerphone": "owner's phone number",
@@ -47,7 +46,7 @@ once this request is sent, a unique tag and a date is generated for every new ad
 
 This route displays the details of a particular pet. The client needs to send the unique tag as a request and the API fetches the pet details. The pet name is not sent as a request as multiple pets in the pet store can have the same name and it is not ideal to fetch them all. Hence, a unique tag is used.
 A GET request.
-The request format:
+<br/> The request format:
 {
   "tag":"the unique tag generated at the time of creation (/add)"
 }
@@ -56,7 +55,7 @@ The request format:
 
 This route can be used to update the pet data. Every paramter can be updated except the unique tag.
 A PUT request.
-request format:
+<br/> request format:
 {
 "tag":"the tag generated at the time of creation (/add)",
 "pet":"the new pet name",
@@ -68,7 +67,7 @@ request format:
 
 This route is used to delete pet data. To ensure only the owner can delete the data, the request format includes the name of the owner and the tag. The pet name is not used as multiple pets can have the same name. Tags are unique.
 A delete request.
-The request format is:
+<br/> The request format is:
 {
 "tag":"tag",
 "owner":"owner"
@@ -78,7 +77,7 @@ The request format is:
 
 This route displays the pet names and details of all pets owned by a particular owner. 
 A get request.
-Request format:
+<br/> Request format:
 {
 "owner":"owner's name"
 }
@@ -87,7 +86,7 @@ Request format:
 
 This route displays the name, emailId and the phone number of the owner of a pet. Since multiple pets can have the same name, the request includes the unique tag. 
 A get request.
-request format:
+<br/> request format:
 {
 "tag":"the unique tag assigned to the pet",
 "pet":"the name of the pet"
@@ -97,7 +96,7 @@ request format:
 
 This displays the names of all of the owners of the pets of the pet store. Also displays the tag of their pet(s). 
 A get request. 
-request format;
+<br/> request format;
 {
 (no data)
 }
