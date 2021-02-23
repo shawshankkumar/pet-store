@@ -10,6 +10,7 @@ If you are facing any difficulties, contact the owner of this repository.
 
 Once a `.env` file has been created, do the following to run this:
 
+* yarn install: to install the dependencies.
 * yarn build: This will compile the ts into javascript. 
 * yarn start: This will start the server.
 
