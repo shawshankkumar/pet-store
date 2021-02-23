@@ -145,24 +145,26 @@ export const ownerAllPets = async (owner: string) => {
 
 export const ownerOfPet = async (pet, tag) => {
     try {
-        let data = await (await db()).collection('petstore').find({ pet: pet }).toArray();
-        let obj: object = {};
-        let array: object = [];
-        for (let i = 0; i < data.length; i++) {
-            obj = {
-                owner: data[i].owner,
-                ownerphone: data[i].ownerphone,
-                owneremail: data[i].owneremail,
-                tag: data[i].tag,
-            };
-            array[i] = obj;
+        let data = await (await db()).collection('petstore').findOne({ tag: tag });
+        if (data === null) {
+            throw { code: 404, message: 'Pet data not found' };
         }
-        let objSend = {
-            pet: pet,
-            array: array,
+        let data1 = {
+            pet: data.pet,
+            owner: data.owner,
+            owneremail: data.owneremail,
+            ownerphone: data.ownerphone,
+            tag: tag,
         };
-        return array;
+        if (data.pet !== pet) {
+            throw { message: 'The name does not match with the tag. Enter the correct name/tag', code: 401 };
+        }
+        return data1;
     } catch (error) {
+        logger.error(error);
+        if (error.code === 404) {
+            throw error;
+        }
         throw { code: 500, message: 'Could not display owner of a pet' };
     }
 };
